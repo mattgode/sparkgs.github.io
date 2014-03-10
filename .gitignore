@@ -1,6 +1,2 @@
-*.class
+_site
 
-# Package Files #
-*.jar
-*.war
-*.ear
