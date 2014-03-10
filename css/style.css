@@ -1,0 +1,78 @@
+body {
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 16px;
+  padding-top: 24px;
+}
+
+li {
+  font-size: 18px;
+}
+
+a.navbar-brand {
+  font-family: 'Russo One', sans-serif;
+  font-weight: bold;
+  font-size: 25px;
+  color: #504849 !important;
+}
+
+pre {
+  font-family: 'Courier New','monospace';
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.spark-logo {
+  color: #3E8ACC;
+}
+
+.g {
+  position: relative;
+  top: -10px;
+  color: #079502;
+}
+
+.s {
+  position: relative;
+  top: 20px;
+  color: #3E8ACC;
+}
+
+.g2 {
+  position: relative;
+  top: -3px;
+  color: #079502;
+}
+
+.s2 {
+  position: relative;
+  top: 6px;
+  color: #3E8ACC;
+}
+
+
+#hero-text {
+  font-family: 'Russo One', sans-serif;
+  font-weight: bold;
+  font-size: 92px;
+}
+
+/* Code styles */
+pre.prettyprint {
+  padding: 4px 2px;
+}
+
+span.com {
+  color: #8c8c8c;
+}
+
+span.kwd {
+  color: blue;
+}
+
+span.str {
+  color: #008a00;
+}
+
+#results {
+  white-space: pre;
+}
