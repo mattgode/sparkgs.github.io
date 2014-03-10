@@ -1,4 +1,4 @@
-sparkgosu.github.io
+sparkgs.github.io
 ===================
 
 Main Site
