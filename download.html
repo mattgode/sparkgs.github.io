@@ -1,0 +1,50 @@
+---
+layout: main
+---
+
+<h1>Downloads</h1>
+
+<h3>Implicit</h3>
+
+<p>
+  The easiest way to use SparkGS is to not explicitly download it at all. Simply create a file named
+  <code>spark.gsp</code>
+  with the following contents:
+</p>
+
+<pre class="prettyprint">
+
+    classpath "org.gosu-lang.gosu:sparkgs:0.1.0"
+    extends sparkgs.SparkFile
+
+    get('/', \-> "Hello World")
+
+
+</pre>
+
+<p>And you should be good to go. Gosu will automatically download the library and set up the parent class for
+  the current program when you run <code>$ gosu spark.gsp</code></p>
+
+<h3>POM File Configuration</h3>
+
+<p>If you are using Maven or any other POM-aware tool, or if you are deploying to Heroku, you will want to use
+  the following dependency in your POM:</p>
+
+<pre class="prettyprint">
+
+    &lt;dependency>
+      &lt;groupId>org.gosu-lang.gosu&lt;/groupId>
+      &lt;artifactId>sparkgs&lt;/artifactId>
+      &lt;version>0.1.0&lt;/version>
+    &lt;/dependency>
+
+
+</pre>
+
+<p>
+  Additional documentation on how to deploy on Heroku is available <a href="/docs.html#heroku">here</a>.
+</p>
+
+<h3>Source Code</h3>
+
+<p>The source for SparkGS is available <a href="https://github.com/sparkgs/sparkgs">on Github</a>.</p>

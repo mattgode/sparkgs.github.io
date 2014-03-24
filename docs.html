@@ -1,0 +1,565 @@
+---
+layout: main
+---
+
+<h1>Documentation</h1>
+
+<a class="anchor" name="getting_started"></a>
+<section>
+  <h2>Getting Started</h2>
+
+  <p>
+    Getting started with SparkGS could not be easier.  Follow these four steps:
+  </p>
+
+  <p>1. Install <a href="http://gosu-lang.github.io">Gosu</a></p>
+
+  <p>2. Save this code to <code>spark.gsp</code></p>
+      	<pre class="prettyprint">
+
+    classpath "org.gosu-lang.gosu:sparkgs:0.1.0"
+    extends sparkgs.SparkFile
+
+    get('/', \-> "Hello World")
+      	</pre>
+  <p>3. Fire it up: <code>$ gosu spark.gsp</code></p>
+
+  <p>4. Check it out at <a href="http://localhost:4567/">http://localhost:4567/</a>
+
+</section>
+
+<a class="anchor" name="routes"></a>
+<section>
+
+  <h2>Defining Routes</h2>
+
+  <p>In SparkGS, as with SinatraRB and SparkJava, routes are defined with three components:</p>
+
+  <ul>
+    <li>An <a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods">HTTP Verb</a></li>
+    <li>A Path</li>
+    <li>A Handler</li>
+  </ul>
+
+  <p>In SparkGS, the HTTP verb is a method call, the path is a string argument, and the handler is (usually) a block.</p>
+
+  <p>Here are a few example routes:</p>
+
+  <pre class="prettyprint">
+
+  // Routes a GET root of the webserver to a block, which simply returns "Hello World"
+  get('/', \-> "Hello World")
+
+  //  Routes a POST to /inbox to the the InboxHandler class
+  post('/inbox', \-> InboxHandler.acceptInput(Request.Body) )
+
+  //  Routes all verbs to /contacts to the the ContactsHandler class
+  handle('/contacts', \-> new ContactsHandler().handleRequest(Request, Response) )
+  </pre>
+
+  <p>So, for each HTTP verb, there is a corresponding method, and each method accepts two arguments:</p>
+
+  <ul>
+    <li>A path defined by a string</li>
+    <li>A handler (typically a block)</li>
+  </ul>
+
+  <h3>Path Variables</h3>
+
+  <p>SparkJava (and, hence, SparkGS) support path variables and splats, which become available via
+    the <code>Params</code> object or Splat property during a request.</p>
+
+    <pre class="prettyprint">
+
+  get('/contact/:id', \-> "You asked for a contact with the ID ${Params['id']}")
+
+  get('/file/*', \-> "You asked for the file with path ${Request.Splat}")
+  </pre>
+
+  <h3>Request Properties</h3>
+
+  <p>In SparkGS programs, there are a few properties and methods available to handlers:</p>
+
+  <ul>
+    <li><code>Request</code> - Access to the HTTP Request info</li>
+    <li><code>Response</code> - Access to the HTTP Response</li>
+    <li><code>Writer</code> - Access to the Writer for the HTTP Response</li>
+    <li><code>Cookies</code> - Access to the Cookies for the HTTP Request and Response</li>
+    <li><code>Session</code> - Access to the HTTP Session</li>
+    <li><code>redirect(url)</code> - Redirect to the given URL</li>
+  </ul>
+
+  <p>These objects are documented more fully below.</p>
+
+  <p>Note that <strong>any</strong> object can get access to these properties by implementing the
+    <code>IHasRequestContext</code> interface, which mixes these properties in via the
+    <code>RequestContextEnhancement</code> enhancement.</p>
+
+</section>
+
+<a class="anchor" name="requests"></a>
+<section>
+
+  <h2>Requests</h2>
+
+  <p>The <code>Request</code> object in SparkGS is mostly a wrapper around the request object in
+    SparkJava, but it surfaces data via properties rather than as methods.
+  </p>
+
+  <p>So this SparkJava code:</p>
+
+  <pre class="prettyprint">
+
+    System.out.println(request.pathInfo());
+  </pre>
+
+  <p>Becomes:</p>
+
+  <pre class="prettyprint">
+
+    print(Request.PathInfo)
+  </pre>
+
+  <p>Here is a list of all the properties and methods of a request object:</p>
+
+
+  <pre class="prettyprint">
+
+  Request.Params                // returns a parameter map
+  Request.Attributes            // returns the attributes map
+  Request.SparkJavaRequest      // returns the raw SparkJava request
+  Request.Session               // returns the session
+  Request.IsGet                 // returns true if the current request is an HTTP GET
+  Request.IsPost                // returns true if the current request is an HTTP POST
+  Request.IsPut                 // returns true if the current request is an HTTP PUT
+  Request.IsPatch               // returns true if the current request is an HTTP PATCH
+  Request.IsDelete              // returns true if the current request is an HTTP DELETE
+  Request.IsHead                // returns true if the current request is an HTTP HEAD
+  Request.IsTrace               // returns true if the current request is an HTTP TRACE
+  Request.IsConnect             // returns true if the current request is an HTTP CONNECT
+  Request.IsOptions             // returns true if the current request is an HTTP OPTIONS
+  Request.ContentType           // returns the content type of the request
+  Request.Body                  // returns the body of the request
+  Request.ContentLength         // returns the length of the body content
+  Request.ContextPath           // returns the context path of the request
+  Request.Cookies               // returns cookies of the request (see also the <a href="#cookies">CookieJar</a>, which abstracts cookies)
+  Request.Headers               // returns a map of all request headers
+  Request.Host                  // returns the host of the request
+  Request.Ip                    // returns the IP of the request
+  Request.PathInfo              // returns the path of the request
+  Request.UserAgent             // returns the user agent of the request
+  Request.Splat                 // returns the splat of the request, or null if none exists
+  Request.Scheme                // returns the scheme of the request (e.g. "http")
+  Request.URL                   // returns the full URL of the request
+  Request.Port                  // returns the port of the request
+  </pre>
+
+
+</section>
+
+<a class="anchor" name="responses"></a>
+<section>
+
+  <h2>Responses</h2>
+
+  <p>Like <code>Requests</code>, SparkGS <code>Responses</code> are largely wrappers around the SparkJava response.</p>
+
+  <p>Here is an outline of the available functions:</p>
+
+  <pre class="prettyprint">
+
+  Response.Writer                               // returns the writer for this response
+  Response.SparkJavaResponse                    // returns the raw SparkJava response object
+  Response.Committed                            // true if the current response has been committed
+  Response.redirect(to, [optional] code)        // redirects to the given url with an optional code (defaults to 302)
+  Response.Status = 401                         // sets the response status to 401
+  Response.Type = "application/json"            // sets the response type
+  </pre>
+
+  <h3>Handlers Explained</h3>
+
+  <p>Response handlers are a bit different in SparkGS than they are in SparkJava: they are typically (but not always
+  blocks) rather than anonymous implementations of an interface.  As such, they have slightly different characteristics:</p>
+
+  <ul>
+    <li>
+      A handler can simply be a raw string:
+      <pre class="prettyprint">
+
+        get("/foo", "Foo!")
+      </pre>
+    </li>
+    <li>
+      A handler can be a block that returns a string:
+      <pre class="prettyprint">
+
+        get("/foo", \-> "Foo!")
+      </pre>
+    </li>
+    <li>
+      A handler can be a block that works with a writer and doesn't actually return anything:
+      <pre class="prettyprint">
+
+        get("/foo", \-> { Writer.append("Foo!") } )
+      </pre>
+    </li>
+  </ul>
+
+  <p>These are all perfectly reasonable ways to use SparkGS.</p>
+
+  <p>Which one you use will depend on how complicated the logic is in your handler.</p>
+
+</section>
+
+<a class="anchor" name="templates"></a>
+<section>
+  <h2>Templates</h2>
+
+  <p>One of the best extensions that SparkGS makes to SparkJava isn't even part of the SparkGS codebase: it's the
+  fact that Gosu comes with type-safe templating built into the language via Gosu Template Files!</p>
+
+  <p>This allows you to define a Gosu Template file (say at <code>/src/view/MyTemplate.gst</code>)</p>
+
+<pre class="prettyprint">
+<%@ params( name : String ) %>
+&lt;html>
+  &lt;body>
+    &lt;h1>Hello there ${name}!&lt;/h1>
+  &lt;/body>
+&lt;/html>
+</pre>
+
+  <p>And then invoke the template from your handler:</p>
+
+<pre class="prettyprint">
+
+  get("/hello", \-> view.MyTemplate.render(Writer, Params['name']) )
+
+</pre>
+
+  <p>Very clean!</p>
+
+  <h3>Layouts</h3>
+
+  <p>SparkGS supports a simple layout mechanism:</p>
+
+  <p>In your spark file, set the <code>Layout</code> property to be anything that satisfies the <code>sparkgs.Layout</code>
+  structure.  This is typically via a Gosu Template File:</p>
+
+<pre class="prettyprint">
+
+  Layout =  view.MyLayout
+  //... route definitions
+
+</pre>
+
+  <p>The layout should output the <code>body</code> string where it wants to include the body of the response:</p>
+
+<pre class="prettyprint">
+<%@ params( body : String ) %>
+&lt;html>
+  &lt;body>
+    ${body}
+  &lt;/body>
+&lt;/html>
+</pre>
+
+
+  <p>Note that you can override the layout at the beginning of an action as well.</p>
+
+</section>
+
+<a class="anchor" name="cookies"></a>
+<section>
+  <h2>Cookies</h2>
+
+  <p>SparkGS abstracts cookies much the same way that <a href="http://rubyonrails.org/">Rails</a> does, by
+  unifying both the request and response cookies under one API, the CookieJar.</p>
+
+  <p>The <code>Cookie</code> property is a cookie jar.  It can be treated as a map, where reads read the request
+  cookies and writes set response cookies:</p>
+
+<pre class="prettyprint">
+
+  get("/get_and_set_cookies", \-> {
+    print( Cookies["Cookie1"] )   // reads the request cookie
+    Cookies["Cookie2"] = "Yay!"   // writes a response cookie
+
+    // An advanced cookie write, setting timeout, secure and path as well
+    Cookies.set("Cookie3", "Yay!", Integer.MAX_INT, true, "/get_and_set_cookies)
+  })
+
+</pre>
+
+</section>
+
+<a class="anchor" name="config"></a>
+<section>
+
+  <h2>Configuration</h2>
+  <p>Although SparkGS is XML-free, there are a few properties you can use to configure your server via the
+  spark file</p>
+
+  <h3>Port</h3>
+
+  <p>The port of the server can be set via the <code>Port</code> property.  SparkGS will also inspect the environment
+  and if a <code>$PORT</code> variable is set, it will use that as the default.</p>
+
+  <h3>Layout</h3>
+
+  <p>As was covered above in the <a href="#templates">Templates</a> section, you can set the layout  by using the
+  <code>Layout</code> property.</p>
+
+  <h3>Static Files</h3>
+
+  <p>If you want SparkGS to serve your static assets as well, you can set the directory that they should be served
+  out of via the <code>StaticFiles</code> property:</p>
+
+<pre class="prettyprint">
+
+  StaticFiles = "/public"
+
+  // route definitions...
+
+</pre>
+
+</section>
+
+<a class="anchor" name="advanced_routing"></a>
+<section>
+
+  <h2>Advanced Routing</h2>
+
+  <p>SparkGS gives you some additional route definition tools so you can easily adopt standard URL conventions in
+  your application.</p>
+
+  <h3>RESTful routing</h3>
+
+  <p>If you want to define a RESTful set of URLs, you can use the <code>resource()</code> method, which takes a
+  path string and controller object.</p>
+
+  <pre class="prettyprint">
+  resource("/contacts", new ContactsController())
+  </pre>
+
+  <p>The controller must implement the <code>IResourceController</code> interface.  Following Rails conventions,
+    methods are mapped like so:</p>
+
+
+  <table class="table">
+    <thead>
+    <tr>
+      <td style="width:15%">
+        Verb + Route
+      </td>
+      <td>
+        Method
+      </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>GET <em>root</em></td>
+      <td>index()</td>
+    </tr>
+    <tr>
+      <td>GET <em>root</em>/new</td>
+      <td>_new()</td>
+    </tr>
+    <tr>
+      <td>POST <em>root</em></td>
+      <td>create()</td>
+    </tr>
+    <tr>
+      <td>GET <em>root</em>/:id</td>
+      <td>show(id)</td>
+    </tr>
+    <tr>
+      <td>GET <em>root</em>/:id/edit</td>
+      <td>edit(id)</td>
+    </tr>
+    <tr>
+      <td>GET <em>root</em>/:id/edit</td>
+      <td>edit(id)</td>
+    </tr>
+    <tr>
+      <td>PUT <em>root</em>/:id <br/> POST <em>root</em>/:id</td>
+      <td>update(id)</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p>Additionally, all additional declared public methods on the controller are mapped to URLs like so:</p>
+
+  <ul>
+    <li>A declared public method <code>foo()</code> is made available at <code><em>root</em>/foo</code> for all HTTP verbs</li>
+    <li>A declared public method <code>bar(id:String)</code> is made available at <code><em>root</em>/:id/foo</code> for all
+    HTTP verbs</li>
+  </ul>
+
+  <p>Almost all controllers will want to implement <code>IHasRequestContext</code> so they can access request values</p>
+
+  <h3>RPC-style routing</h3>
+
+  <p>If you wish to simply expose a controllers methods RPC style, you can use the <code>rpc()</code> method:</p>
+
+
+<pre class="prettyprint">
+
+  rpc("/rpc", new RPCController())
+
+</pre>
+
+  <p>All declared public methods on the class will be made available in the following manner:</p>
+
+  <p>For a declared public method <code>methodN()</code> with parameters <code>p1,...,pN</code>, the path
+  <code><em>root</em>/methodN</code> will handle all HTTP verbs by invoking the method, converting the
+  string value of the HTTP parameter into the type of the the parameter to the method.</p>
+
+  <p>Note that RPC controllers do not need to implement any interface, but may want to implement <code>IHasRequestContext</code>
+  in order to get access to the request information.</p>
+
+</section>
+
+<a class="anchor" name="heroku"></a>
+<section>
+  <h2>Deploying To Heroku</h2>
+  <p>
+    To deploy a SparkGS application on Heroku, you will need three additional files:
+  </p>
+  <ul>
+    <li>
+      A <code>/Procfile</code> file with the following content:
+      <pre class="prettyprint">
+
+ web:    java -cp "target/dependency/*":target/classes sparkgs.Bootstrap
+      </pre>
+    </li>
+    <li>
+      A <code>/system.properties</code> file with the following content:
+      <pre class="prettyprint">
+
+ java.runtime.version=1.7
+      </pre>
+    </li>
+    <li>
+      A <code>/pom.xml</code> file with the following contents:
+      <pre class="prettyprint">
+...
+    &lt;dependency>
+      &lt;groupId>org.gosu-lang.gosu&lt;/groupId>
+      &lt;artifactId>sparkgs&lt;/artifactId>
+      &lt;version>0.1.0&lt;/version>
+    &lt;/dependency>
+...
+  &lt;build>
+    &lt;resources>
+      &lt;resource>
+        &lt;directory>src/main/resources&lt;/directory>
+      &lt;/resource>
+      &lt;resource>
+        &lt;filtering>false&lt;/filtering>
+        &lt;directory>src/main/java&lt;/directory>
+        &lt;includes>
+          &lt;include>**/*.gs&lt;/include>
+          &lt;include>**/*.gsp&lt;/include>
+          &lt;include>**/*.gst&lt;/include>
+          &lt;include>**/*.gsx&lt;/include>
+        &lt;/includes>
+        &lt;excludes>
+          &lt;exclude>**/*.java&lt;/exclude>
+        &lt;/excludes>
+      &lt;/resource>
+    &lt;/resources>
+    &lt;plugins>
+      &lt;plugin>
+        &lt;groupId>org.apache.maven.plugins&lt;/groupId>
+        &lt;artifactId>maven-dependency-plugin&lt;/artifactId>
+        &lt;version>2.4&lt;/version>
+        &lt;executions>
+          &lt;execution>
+            &lt;id>copy-dependencies&lt;/id>
+            &lt;phase>package&lt;/phase>
+            &lt;goals>
+              &lt;goal>copy-dependencies&lt;/goal>
+            &lt;/goals>
+          &lt;/execution>
+        &lt;/executions>
+      &lt;/plugin>
+    &lt;/plugins>
+  &lt;/build>
+...
+      </pre>
+    </li>
+  </ul>
+
+  <p>With that done, you should be able to simply push to your heroku git URL, and the app will come up!</p>
+</section>
+
+<a class="anchor" name="examples"></a>
+<section>
+  <h2>Examples</h2>
+
+<pre class="prettyprint">
+  classpath "org.gosu-lang.gosu:sparkgs:0.10"
+  extends sparkgs.SparkFile
+
+  uses controller.*
+  uses view.*
+  uses view.layout.*
+  uses java.util.*
+
+  // Config
+  DefaultLayout = new AppLayoutTmp() // Should be AppLayout
+  StaticFiles = "/public"
+
+  // Routes
+
+  // Root example to writer
+  handle("/", \-> Sample.render(Writer), :verbs = { GET, POST } )
+
+  // Raw string example
+  get("/foo", "Foo!")
+
+  // Post example
+  post("/post_to", \-> Params['foo'] )
+
+  // Handle example
+  handle("/handle", \-> Request.IsGet )
+
+  // Redirect example
+  get("/redirect", \-> redirect("/foo") )
+
+  // REST-ful resource example
+  resource("/contacts", new ContactsController())
+
+  // RPC Example
+  rpc("/rpc", new RPCExample())
+
+  // Nested Layout Example
+  get("/nested", \-> {
+    Writer.append("")
+    Layout = new NestedLayoutTmp()
+    Writer.append("asdfsadf")
+  })
+
+  // Cookie example
+  get("/cookie1", \-> {
+    Cookies["Foo"] =  UUID.randomUUID().toString()
+    redirect("/cookie2")
+  })
+
+  get("/cookie2", \-> Cookies["Foo"] )
+
+  // Header example
+  get("/header", \-> {
+    Headers["X-Foo"] = "Bar"
+    return "derp"
+  })
+</pre>
+
+</section>
+
+<div class="doc-bottom-spacer">
+
+</div>

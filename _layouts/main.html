@@ -8,17 +8,16 @@
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 	<script src="/js/google-code-prettify/prettify.js"></script>
 
+  <link rel="shortcut icon" href="/img/bolt-only.png">
 	<link href='//fonts.googleapis.com/css?family=Russo+One' rel='stylesheet' type='text/css'>
 	<link href='//fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
 	<link href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
 
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/css/google-code-prettify/prettify.css">
 	<link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
-
 
 	<div class="container">
 
@@ -32,18 +31,55 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Spark<span class='g2'>G</span><span class='s2'>S</span></a>
+          <a class="navbar-brand" href="/"><img src="/img/large-logo-no-bolt.png" style="width:100px"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Why?</a></li>
-            <li><a href="#">Docs</a></li>
-            <li><a href="#">Download</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/why.html">Why?</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle"
+                 data-toggle="dropdown"
+                 href="#">Docs
+                <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="/docs.html">Getting Started</a>
+                </li>
+                <li>
+                  <a href="/docs.html#routes">Defining Routes</a>
+                </li>
+                <li>
+                  <a href="/docs.html#requests">Requests</a>
+                </li>
+                <li>
+                  <a href="/docs.html#responses">Responses</a>
+                </li>
+                <li>
+                  <a href="/docs.html#templates">Templates</a>
+                </li>
+                <li>
+                  <a href="/docs.html#cookies">Cookies</a>
+                </li>
+                <li>
+                  <a href="/docs.html#config">Configuration</a>
+                </li>
+                <li>
+                  <a href="/docs.html#advanced_routing">Advanced Routing</a>
+                </li>
+                <li>
+                  <a href="/docs.html#heroku">Heroku</a>
+                </li>
+                <li>
+                  <a href="/docs.html#examples">Examples</a>
+                </li>
+              </ul>
+            </li>
+            <li><a href="/download.html">Download</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/blog.html">Blog</a></li>
-            <li><a href="/blog.html"><i class="fa fa-github"></i></a></li>
+            <li><a href="https://github.com/sparkgs/sparkgs"><i class="fa fa-github"></i></a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div><!--/.container-fluid -->

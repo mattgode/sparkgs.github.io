@@ -3,26 +3,34 @@ layout: main
 ---
 
 <div class="hero-unit">
+
   <h1 id="hero-text">
-	<i class="fa fa-bolt spark-logo"></i>&nbsp;Spark<span class='g'>G</span><span class='s'>S</span>
-	</h1>
-  <h4>The <a href="http://gosu-lang.github.io">Gosu</a> JVM Web Microframework</h4>
+    <img src="img/large-logo.png" style="width:700px;max-width:100%">
+  </h1>
+
+  <h4>The <a href="http://gosu-lang.github.io">Gosu</a> extension to the <a href="http://www.sparkjava.com/">SparkJava</a>  Micro Web Framework</h4>
+
 </div>
 
 <div class="row">
   <div class="col-md-12">
-  <h3>Quick Start</h3>
-  <p>1. Install <a href="http://gosu-lang.github.io">Gosu</a></p>
-  <p>2. Save this code to <code>spark.gsp</code></p>
+
+    <h3>Quick Start</h3>
+
+    <p>1. Install <a href="http://gosu-lang.github.io">Gosu</a></p>
+
+    <p>2. Save this code to <code>spark.gsp</code></p>
       	<pre class="prettyprint">
 
-    classpath "org.gosu-lang.gosu:sparkgs:0.10"
+    classpath "org.gosu-lang.gosu:sparkgs:0.1.0"
     extends sparkgs.SparkFile
 
     get('/', \-> "Hello World")
       	</pre>
-   <p>3. Fire it up: <code>$ gosu spark.gsp</code></p>
-   <p>4. Check it out at <a href="http://localhost:4567/">http://localhost:4567/</a>
+    <p>3. Fire it up: <code>$ gosu spark.gsp</code></p>
+
+    <p>4. Check it out at <a href="http://localhost:4567/">http://localhost:4567/</a>
+
   </div>
 </div>
 
