@@ -33,7 +33,7 @@ layout: main
 
   <h2>Defining Routes</h2>
 
-  <p>In SparkGS, as with SinatraRB and SparkJava, routes are defined with three components:</p>
+  <p>In SparkGS, as with SinatraRB and SparkJava, HTTP routes are defined with three components:</p>
 
   <ul>
     <li>An <a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods">HTTP Verb</a></li>
@@ -55,6 +55,10 @@ layout: main
 
   //  Routes all verbs to /contacts to the the ContactsHandler class
   handle('/contacts', \-> new ContactsHandler().handleRequest(Request, Response) )
+
+  //  Routes a GET to a Gosu Template
+  get('/input_form', \-> view.InputForm.render(Writer) )
+
   </pre>
 
   <p>So, for each HTTP verb, there is a corresponding method, and each method accepts two arguments:</p>
@@ -67,7 +71,7 @@ layout: main
   <h3>Path Variables</h3>
 
   <p>SparkJava (and, hence, SparkGS) support path variables and splats, which become available via
-    the <code>Params</code> object or Splat property during a request.</p>
+    the <code>Params</code> property or <code>Splat</code> property during a request.</p>
 
     <pre class="prettyprint">
 
@@ -78,7 +82,7 @@ layout: main
 
   <h3>Request Properties</h3>
 
-  <p>In SparkGS programs, there are a few properties and methods available to handlers:</p>
+  <p>In SparkGS programs, there are a few properties and methods available to for used in your handlers:</p>
 
   <ul>
     <li><code>Request</code> - Access to the HTTP Request info</li>
@@ -89,11 +93,15 @@ layout: main
     <li><code>redirect(url)</code> - Redirect to the given URL</li>
   </ul>
 
-  <p>These objects are documented more fully below.</p>
+  <p>These objects are documented more fully below, but most of them behave in the way you would expect.</p>
 
-  <p>Note that <strong>any</strong> object can get access to these properties by implementing the
+  <h4>Accesing Request Info Elsewhere</h4>
+
+  <p>Note that <strong>any</strong> object can get access to these properties by simply implementing the
     <code>IHasRequestContext</code> interface, which mixes these properties in via the
     <code>RequestContextEnhancement</code> enhancement.</p>
+
+  <p>So you can move complicated logic out to </p>
 
 </section>
 
@@ -202,6 +210,15 @@ layout: main
 
         get("/foo", \-> { Writer.append("Foo!") } )
       </pre>
+    </li>
+    <li>
+      A handler can be a method reference to any method that does not take any argumetns:
+      <pre class="prettyprint">
+
+        get("/foo", MyController#foo() )
+      </pre>
+      In this case, a new instance of MyController will be created (if the method is non-static) and the
+      <code>foo()</code> method will be invoked.
     </li>
   </ul>
 
@@ -379,10 +396,6 @@ layout: main
       <td>edit(id)</td>
     </tr>
     <tr>
-      <td>GET <em>root</em>/:id/edit</td>
-      <td>edit(id)</td>
-    </tr>
-    <tr>
       <td>PUT <em>root</em>/:id <br/> POST <em>root</em>/:id</td>
       <td>update(id)</td>
     </tr>
@@ -500,6 +513,8 @@ layout: main
 <section>
   <h2>Examples</h2>
 
+  <p>Here is an example spark file, showing some basic route definitions:</p>
+
 <pre class="prettyprint">
   classpath "org.gosu-lang.gosu:sparkgs:0.10"
   extends sparkgs.SparkFile
@@ -509,14 +524,19 @@ layout: main
   uses view.layout.*
   uses java.util.*
 
+  //------------------------------------
   // Config
-  DefaultLayout = new AppLayoutTmp() // Should be AppLayout
+  //------------------------------------
+
+  DefaultLayout = AppLayout // A Gosu Template layout
   StaticFiles = "/public"
 
+  //------------------------------------
   // Routes
+  //------------------------------------
 
-  // Root example to writer
-  handle("/", \-> Sample.render(Writer), :verbs = { GET, POST } )
+  // Root example using a writer
+  get("/", \-> Sample.render(Writer))
 
   // Raw string example
   get("/foo", "Foo!")
@@ -524,8 +544,11 @@ layout: main
   // Post example
   post("/post_to", \-> Params['foo'] )
 
-  // Handle example
+  // Handle all verbs example
   handle("/handle", \-> Request.IsGet )
+
+  // Handle specific verbs example
+  handle("/handle2", \-> Request.IsGet, :verbs = {GET, POST} )
 
   // Redirect example
   get("/redirect", \-> redirect("/foo") )
@@ -533,28 +556,26 @@ layout: main
   // REST-ful resource example
   resource("/contacts", new ContactsController())
 
-  // RPC Example
+  // RPC example
   rpc("/rpc", new RPCExample())
 
-  // Nested Layout Example
-  get("/nested", \-> {
-    Writer.append("")
-    Layout = new NestedLayoutTmp()
-    Writer.append("asdfsadf")
+  // Custom layout example
+  get("/custom_layout", \-> {
+    Layout = CustomLayout
+    Writer.append("Check out my custom layout!")
   })
 
   // Cookie example
   get("/cookie1", \-> {
-    Cookies["Foo"] =  UUID.randomUUID().toString()
+    Cookies["Foo"] =  UUID.randomUUID() as String
     redirect("/cookie2")
   })
-
   get("/cookie2", \-> Cookies["Foo"] )
 
   // Header example
   get("/header", \-> {
     Headers["X-Foo"] = "Bar"
-    return "derp"
+    return "Sent the header 'X-Foo' along..."
   })
 </pre>
 

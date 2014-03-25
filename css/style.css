@@ -6,6 +6,7 @@ body {
 
 li {
   font-size: 18px;
+  margin: 8px 0px;
 }
 
 a.navbar-brand {
@@ -91,5 +92,10 @@ p {
 }
 
 .doc-bottom-spacer {
-  height:5000px;
+  height:500px;
+}
+
+code {
+  color:#088A4B;
+  background-color:#E6E6E6;
 }
