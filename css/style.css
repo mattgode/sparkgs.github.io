@@ -4,7 +4,7 @@ body {
   padding-top: 24px;
 }
 
-li {
+.content li {
   font-size: 18px;
   margin: 8px 0px;
 }
