@@ -284,6 +284,35 @@ layout: main
 
   <p>Note that you can override the layout at the beginning of an action as well.</p>
 
+  <h3>Form Helpers</h3>
+
+  <p>SparkGS has tools for generating some common HTML elements in Gosu templates.</p>
+
+  <p>For example, this boilerplate code to list off all possible values of an enum:</p>
+
+<pre class="prettyprint">
+  &lt;form action="/root">
+    &lt;label for='Country[Continent]'>Continent&lt;/label>
+    &lt;select name='Country[Continent]'>
+      &lt;option value='Africa'>Africa&lt;/option>
+      //.. 5 more continents
+      &lt;option value='Australia'>Asia&lt;/option>
+    &lt;/select>
+    &lt;input type='submit' value='Submit'/>
+  &lt;/form>
+</pre>
+
+  <p>Becomes:</p>
+
+<pre class="prettyprint">
+  &lt;form action="/root">
+    ${SparkGSTemplate.selectInput(Country#Continent)}
+    ${SparkGSTemplate.submitInput()}
+  &lt;/form>
+</pre>
+
+  <p>Using Gosu's feature literals we are able to keep our views clean and intuitive.</p>
+
 </section>
 
 <a class="anchor" name="cookies"></a>
